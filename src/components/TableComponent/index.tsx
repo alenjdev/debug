@@ -26,7 +26,7 @@ export const TableComponent: FC<ITableProps> = ({
               <TableDataCell content={debugItem.name} />
               <TableDataCell
                 content={currentContent[0].toString()}
-                type={currentContent[1]}
+                type={currentContent[1] as any}
               />
             </TableRow>
           );

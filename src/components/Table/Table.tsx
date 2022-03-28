@@ -34,9 +34,9 @@ export const Table: FC<ITableProps> = ({ device }) => {
       if (typeof latestState !== "string" && latestState !== undefined) {
         if (
           streams[stream].data[0].name === "autonomy" &&
-          latestState.values[0] !== undefined
+          (latestState as any).values[0] !== undefined
         )
-          currentState.autonomy = latestState.values[0];
+          currentState.autonomy = (latestState as any).values[0];
         if (streams[stream].data[0].name === "left.rpm") {
           currentState.leftRpm = latestState;
         }
@@ -44,14 +44,14 @@ export const Table: FC<ITableProps> = ({ device }) => {
           currentState.rightRpm = latestState;
         if (
           streams[stream].data[0].name === "blade.status" &&
-          latestState.values[0] !== undefined
+          (latestState as any).values[0] !== undefined
         )
-          currentState.bladeStatus = latestState.values[0];
+          currentState.bladeStatus = (latestState as any).values[0];
         if (
           streams[stream].data[0].name === "deadman.handle.status" &&
-          latestState.values[0] !== undefined
+          (latestState as any).values[0] !== undefined
         )
-          currentState.deadmanHandleStatus = latestState.values[0];
+          currentState.deadmanHandleStatus = (latestState as any).values[0];
         if (streams[stream].data[0].name === "voltage")
           currentState.voltage = latestState;
       }
@@ -66,12 +66,7 @@ export const Table: FC<ITableProps> = ({ device }) => {
   );
 };
 
-const getLatestData = (
-  moduleData: {
-    [stream_name: string]: Stream;
-  },
-  stream: string
-): string | undefined => {
+const getLatestData = (moduleData: any, stream: string): string | undefined => {
   if (moduleData[stream] === undefined) {
     return "No stream.";
   }
