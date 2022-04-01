@@ -10,14 +10,12 @@ interface ITableProps {
 
 export const Table: FC<ITableProps> = ({ device }) => {
   const [errorMessage, setErrorMessage] = useState("Waiting for data...");
-  const [state, setState] = useState({
-    autonomy: undefined,
-    bladeStatus: undefined,
-    deadmanHandleStatus: undefined,
-    leftRpm: undefined,
-    rightRpm: undefined,
-    voltage: undefined,
-  });
+  const [autonomy, setAutonomy] = useState();
+  const [bladeStatus, setBladeStatus] = useState();
+  const [deadmanHandleStatus, setDeadmanHandleStatus] = useState();
+  const [leftRpm, setLeftRpm] = useState();
+  const [rightRpm, setRightRpm] = useState();
+  const [voltage, setVoltage] = useState();
 
   useEffect(() => {
     App.addModuleDataListener(receiveModuleData);
@@ -28,7 +26,6 @@ export const Table: FC<ITableProps> = ({ device }) => {
     if (Object.keys(streams).length === 0) {
       throw new Error("No streams.");
     }
-    let currentState = state;
     Object.keys(streams).forEach((stream, idx) => {
       const latestState = getLatestData(streams, stream);
       if (typeof latestState !== "string" && latestState !== undefined) {
@@ -36,33 +33,39 @@ export const Table: FC<ITableProps> = ({ device }) => {
           streams[stream].data[0].name === "autonomy" &&
           (latestState as any).values[0] !== undefined
         )
-          currentState.autonomy = (latestState as any).values[0];
+          setAutonomy((latestState as any).values[0]);
         if (streams[stream].data[0].name === "left.rpm") {
-          currentState.leftRpm = latestState;
+          setLeftRpm(latestState);
         }
         if (streams[stream].data[0].name === "right.rpm")
-          currentState.rightRpm = latestState;
+          setRightRpm(latestState);
         if (
           streams[stream].data[0].name === "blade.status" &&
           (latestState as any).values[0] !== undefined
         )
-          currentState.bladeStatus = (latestState as any).values[0];
+          setBladeStatus((latestState as any).values[0]);
         if (
           streams[stream].data[0].name === "deadman.handle.status" &&
           (latestState as any).values[0] !== undefined
         )
-          currentState.deadmanHandleStatus = (latestState as any).values[0];
-        if (streams[stream].data[0].name === "voltage")
-          currentState.voltage = latestState;
-      }
-      if (JSON.stringify(currentState) !== JSON.stringify(state)) {
-        setState(currentState);
+          setDeadmanHandleStatus((latestState as any).values[0]);
+        if (streams[stream].data[0].name === "voltage") setVoltage(latestState);
       }
     });
   };
 
   return (
-    <TableComponent topicStats={state} tableHeaders={["Item", "Status"]} />
+    <TableComponent
+      topicStats={{
+        autonomy,
+        bladeStatus,
+        deadmanHandleStatus,
+        leftRpm,
+        rightRpm,
+        voltage,
+      }}
+      tableHeaders={["Item", "Status"]}
+    />
   );
 };
 
