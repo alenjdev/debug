@@ -9,13 +9,15 @@ export class TableHeader extends Component<ITableHeader> {
   render(): ReactNode {
     return (
       <thead>
-        {this.props.headers.map((_, idx) => {
-          return (
-            <th key={idx} className={styles.header}>
-              {_}
-            </th>
-          );
-        })}
+        <tr>
+          {this.props.headers.map((_, idx) => {
+            return (
+              <th key={idx} className={styles.header}>
+                {_}
+              </th>
+            );
+          })}
+        </tr>
       </thead>
     );
   }
